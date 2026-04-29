@@ -34,7 +34,7 @@ let engines = [{
     name: 'minimal-gltf-loader',
     path: ENGINE_BASE_URL + '/examples/minimal-gltf-loader/index.html'
 }, {
-    name: 'Khronos glTF Viewer',
+    name: 'Khronos_glTF_Viewer',
     path: ENGINE_BASE_URL + '/examples/khronos-gltf-rv/index.html'
 }, {
     name: 'ClayGL',
