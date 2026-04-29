@@ -99,30 +99,85 @@ function queryEngines(){
 }
 
 function makeTables() {
+    var element = document.getElementById("content");
+
+    // Build Bootstrap nav tabs and tab content containers.
+    var navTabs = document.createElement('ul');
+    navTabs.className = "nav nav-tabs";
+    navTabs.setAttribute('role', 'tablist');
+    navTabs.id = "gltfTab";
+
+    var tabContent = document.createElement('div');
+    tabContent.className = "tab-content";
+    tabContent.id = "gltfTabContent";
+
+    element.appendChild(navTabs);
+    element.appendChild(tabContent);
+
+    // Allow a folder to be preselected via ?tab=FolderName
+    var preselect = null;
+    var tabRes = location.search.match(/[?&]tab=([\w\.\-]+)/);
+    if (tabRes && tabRes[1]) {
+        preselect = decodeURIComponent(tabRes[1]);
+    }
+
     for (let i = 0; i < json.length; ++i) {
         let dataSet = json[i];
-        makeTable(dataSet);
+        let isActive = preselect ? (dataSet.folder === preselect) : (i === 0);
+        makeTab(dataSet, i, isActive, navTabs, tabContent);
+    }
+
+    // Fallback: if no tab matched the preselect, activate the first.
+    if (preselect && !navTabs.querySelector('.nav-link.active')) {
+        var firstLink = navTabs.querySelector('.nav-link');
+        var firstPane = tabContent.querySelector('.tab-pane');
+        if (firstLink) firstLink.classList.add('active');
+        if (firstPane) firstPane.classList.add('show', 'active');
     }
 }
 
-function makeTable(dataSet) {
-    //console.log(dataSet.folder);
-    var element = document.getElementById("content");
-    var p = document.createElement('p');
+function makeTab(dataSet, index, isActive, navTabs, tabContent) {
     let folder = dataSet.folder;
-    p.textContent = folder;
-    element.appendChild(p);
+    let tabId = "tab-" + index + "-" + folder.replace(/[^\w\-]/g, '_');
+
+    // Nav item
+    var li = document.createElement('li');
+    li.className = "nav-item";
+    var a = document.createElement('a');
+    a.className = "nav-link" + (isActive ? " active" : "");
+    a.setAttribute('data-toggle', 'tab');
+    a.setAttribute('href', '#' + tabId);
+    a.setAttribute('role', 'tab');
+    a.textContent = folder;
+    li.appendChild(a);
+    navTabs.appendChild(li);
+
+    // Tab pane
+    var pane = document.createElement('div');
+    pane.className = "tab-pane fade" + (isActive ? " show active" : "");
+    pane.id = tabId;
+    pane.setAttribute('role', 'tabpanel');
+
+    // Link to the folder's README.md on glTF-Asset-Generator.
+    var descP = document.createElement('p');
+    descP.className = "mt-2";
+    var descA = document.createElement('a');
+    var readmeUri = ASSET_GENERATOR_REPOSITORY + "/blob/main/Output/Positive/" + folder + "/README.md";
+    descA.setAttribute('href', readmeUri);
+    descA.setAttribute('target', '_blank');
+    descA.setAttribute('rel', 'noopener');
+    descA.textContent = folder;
+    descP.appendChild(descA);
+    pane.appendChild(descP);
 
     var table = document.createElement('table');
     table.className = "table table-bordered table-sm table-striped";
 
-    var thead = makeTableHead(dataSet);
-    table.appendChild(thead);
+    table.appendChild(makeTableHead(dataSet));
+    table.appendChild(makeTableBody(dataSet));
 
-    var tbody = makeTableBody(dataSet);
-    table.appendChild(tbody);
-
-    element.appendChild(table);
+    pane.appendChild(table);
+    tabContent.appendChild(pane);
 }
 
 function makeTableHead(dataSet) {

@@ -10,9 +10,31 @@
 table {
     border-collapse: collapse;
 }
+.tab-content {
+    padding-top: 1rem;
+}
+#gltfTab .nav-link {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+body {
+    padding-left: 1.0rem;
+    padding-right: 1.0rem;
+}
 </style>
 </head>
 <body>
+<div class="container-fluid mt-3">
+    <a href="https://github.com/cx20/gltf-unit-test" target="_blank" rel="noopener" class="btn btn-outline-primary float-right">View on GitHub</a>
+    <h1>gltf-unit-test</h1>
+    <p>
+        This page provides unit tests for multiple glTF libraries using test models from
+        <a href="https://github.com/KhronosGroup/glTF-Asset-Generator" target="_blank" rel="noopener">glTF-Asset-Generator</a>.
+        Use the tabs below to switch between test categories. You can also limit the libraries shown
+        via the <code>engines</code> URL parameter, e.g.
+        <code>?engines=Three.js,Babylon.js,Filament,PlayCanvas</code>.
+    </p>
+</div>
 <div id="content"></div>
 
 <script src="index.js"></script>
